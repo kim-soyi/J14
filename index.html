@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3040 커리어 재설계: AI 연동 자소서 완성기</title>
+    <style>
+        :root {
+            --primary-color: #0070c0;
+            --secondary-color: #e8f1f5;
+            --accent-color: #ff6b6b;
+            --ai-color: #7c4dff;
+            --dark-text: #222222;
+            --light-bg: #f9fbfd;
+            --border-color: #e1e8ed;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #e0eafc;
+            margin: 0;
+        }
+
+        .section {
+            padding: 24px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a252f;
+            border-bottom: 2px solid #eef2f5;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .input-group label span {
+            color: var(--primary-color);
+        }
+
+        .input-group input, 
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14.5px;
+            box-sizing: border-box;
+            background-color: var(--light-bg);
+            font-family: inherit;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 20px 0 30px 0;
+        }
+
+        .btn {
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .btn-preview {
+            background-color: #f0f4f8;
+            color: #333;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #7c4dff 0%, #0070c0 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(124, 77, 255, 0.3);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .result-box {
+            background-color: var(--secondary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        .result-content {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: #222;
+            white-space: pre-line;
+            min-height: 100px;
+        }
+
+        .placeholder-text {
+            color: #888;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            color: var(--ai-color);
+            font-weight: bold;
+            padding: 20px 0;
+        }
+
+        .copy-btn {
+            margin-top: 12px;
+            background-color: #ffffff;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <span class="badge">무료 AI 자동 연동 (API 키 불필요)</span>
+        <h1>경험 기반 자기소개서 완성기</h1>
+        <p>키 입력 없이 바로 이용하세요. 입력된 경험 데이터를 AI가 자연스럽게 완성합니다.</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">✍️ 나의 경력 & 경험 입력하기</div>
+
+        <div class="input-group">
+            <label for="prevWork">1. 이전 근무지 / 경험 기관 <span>*</span></label>
+            <input type="text" id="prevWork" placeholder="예: OO기업 홍보팀, XX종합복지관">
+        </div>
+
+        <div class="input-group">
+            <label for="learnedSkill">2. 일하면서 배운 점 / 습득한 역량 <span>*</span></label>
+            <input type="text" id="learnedSkill" placeholder="예: 고객 소통 및 데이터 기반 마케팅 역량">
+        </div>
+
+        <div class="input-group">
+            <label for="caseDetail">3. 관련 실행 사례 (구체적 에피소드) <span>*</span></label>
+            <textarea id="caseDetail" placeholder="예: 고객 문의 응대를 맡아 불만 건수를 20% 감소시킨 경험이 있습니다."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label for="targetWork">4. 지원 예정 기관 / 기업 <span>*</span></label>
+            <input type="text" id="targetWork" placeholder="예: 중부여성발전센터">
+        </div>
+
+        <div class="input-group">
+            <label for="targetTask">5. 지원 직무 <span>*</span></label>
+            <input type="text" id="targetTask" placeholder="예: 교육 운영 및 직업 상담 업무">
+        </div>
+
+        <div class="input-group">
+            <label for="contribution">6. 입사 후 다짐 <span>*</span></label>
+            <input type="text" id="contribution" placeholder="예: 신속하게 업무에 적응하여 구직자에게 실질적 도움을 주겠습니다.">
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn btn-preview" id="btnPreview">📝 기본 초안 작성</button>
+            <button type="button" class="btn btn-ai" id="aiBtn">✨ AI로 문장 다듬기</button>
+        </div>
+
+        <div class="section-title">📄 자기소개서 완성 결과</div>
+        
+        <div class="result-box">
+            <div class="result-content" id="resultContent">
+                <div class="placeholder-text">위 항목들을 입력한 후 버튼을 누르면 AI가 생성한 자기소개서가 출력됩니다.</div>
+            </div>
+            <div style="text-align: right;">
+                <button class="copy-btn" id="btnCopy">📋 결과 문장 복사하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getInputs() {
+        return {
+            prevWork: document.getElementById('prevWork').value.trim() || '[근무지]',
+            learnedSkill: document.getElementById('learnedSkill').value.trim() || '[배운 점]',
+            caseDetail: document.getElementById('caseDetail').value.trim() || '[구체적 사례]',
+            targetWork: document.getElementById('targetWork').value.trim() || '[지원기관]',
+            targetTask: document.getElementById('targetTask').value.trim() || '[지원직무]',
+            contribution: document.getElementById('contribution').value.trim() || '[입사 후 다짐]'
+        };
+    }
+
+    // 기본 초안 작성
+    document.getElementById('btnPreview').addEventListener('click', () => {
+        const data = getInputs();
+        const generatedText = `저는 ${data.prevWork}에서 근무한 경험이 있습니다. ${data.prevWork}에서 일하면서 ${data.learnedSkill}을(를) 배웠습니다. 관련 사례는 아래와 같습니다.\n\n"${data.caseDetail}"\n\n저는 이러한 경험을 바탕으로 ${data.targetWork}에서 유사업무인 ${data.targetTask}을(를) 잘 해낼 수 있습니다. ${data.contribution} 기여할 수 있도록 하겠습니다.`;
+
+        const resultContent = document.getElementById('resultContent');
+        resultContent.innerText = generatedText;
+        resultContent.style.color = '#111111';
+    });
+
+    // 무료 AI (Pollinations AI) 호출 함수
+    document.getElementById('aiBtn').addEventListener('click', async () => {
+        const data = getInputs();
+        const resultContent = document.getElementById('resultContent');
+        const aiBtn = document.getElementById('aiBtn');
+
+        resultContent.innerHTML = `<div class="loading-spinner">🤖 AI가 작성 중입니다... 잠시만 기다려 주세요.</div>`;
+        aiBtn.disabled = true;
+
+        const promptText = `너는 전문 취업 컨설턴트이자 자기소개서 작성 전문가야. 
+아래 작성된 사용자의 경험 데이터를 바탕으로, 문맥이 자연스럽고 설득력 있는 자기소개서 한 단락으로 재작성해 줘.
+
+[작성 지침]
+1. "저는 [근무지]에서 근무하며 [역량]을(를) 키웠습니다..." 형태의 신뢰감 있는 비즈니스 문체로 다듬어 줘.
+2. [구체적 사례] 내용을 바탕으로 전문적이고 구체적인 에피소드로 다듬어 줘.
+3. [지원기관]의 [지원직무]에서 어떻게 기여할 수 있는지 연결하여 설득력 있게 마무리해 줘.
+4. 다른 설명이나 인삿말 없이 완성된 자기소개서 본문 단락만 바로 출력해 줘.
+
+[입력 데이터]
+- 이전 근무지: ${data.prevWork}
+- 배운 점/역량: ${data.learnedSkill}
+- 관련 사례: ${data.caseDetail}
+- 지원 기관: ${data.targetWork}
+- 지원 직무: ${data.targetTask}
+- 입사 후 다짐: ${data.contribution}`;
+
+        try {
+            const response = await fetch('https://text.pollinations.ai/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: [
+                        { role: 'system', content: 'You are a professional Korean resume counselor.' },
+                        { role: 'user', content: promptText }
+                    ],
+                    model: 'openai'
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("AI 응답을 받아오지 못했습니다.");
+            }
+
+            const aiText = await response.text();
+            resultContent.innerText = aiText.trim();
+            resultContent.style.color = '#111111';
+
+        } catch (error) {
+            console.error(error);
+            resultContent.innerHTML = `<span style="color: red;">❌ 오류 발생: ${error.message}<br>네트워크 연결을 확인한 뒤 다시 시도해 주세요.</span>`;
+        } finally {
+            aiBtn.disabled = false;
+        }
+    });
+
+    // 복사 기능
+    document.getElementById('btnCopy').addEventListener('click', () => {
+        const resultContent = document.getElementById('resultContent').innerText;
+        if (!resultContent || resultContent.includes("입력한 후 버튼을 누르면")) {
+            alert("먼저 자기소개서 문장을 생성해 주세요.");
+            return;
+        }
+        navigator.clipboard.writeText(resultContent).then(() => {
+            alert("완성된 문장이 클립보드에 복사되었습니다!");
+        });
+    });
+</script>
+
+</body>
+</html>
